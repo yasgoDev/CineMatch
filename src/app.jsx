@@ -5,13 +5,13 @@ const features = [
     number: "01",
     title: "Descubra novos filmes",
     description:
-      "Explore histórias e encontre opções para sua próxima sessão.",
+      "Explore filmes populares e encontre opções para sua próxima sessão.",
   },
   {
     number: "02",
     title: "Encontre seu estilo",
     description:
-      "Busque por título e filtre os filmes pelos gêneros que você gosta.",
+      "Busque por título e filtre os filmes carregados pelos gêneros que você gosta.",
   },
   {
     number: "03",
@@ -73,6 +73,7 @@ function Hero() {
           className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl"
         >
           Menos tempo escolhendo.
+
           <span className="mt-2 block text-brand">
             Mais histórias para descobrir.
           </span>
@@ -113,7 +114,7 @@ function Hero() {
         <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-stone-900 shadow-2xl">
           <div className="flex aspect-[4/3] flex-col justify-end bg-gradient-to-br from-lime-900 via-stone-900 to-stone-950 p-8">
             <span className="mb-4 w-fit rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
-              Uma prévia do que vem aí
+              Explore o catálogo
             </span>
 
             <p className="text-4xl font-black leading-tight">
@@ -123,8 +124,8 @@ function Hero() {
             </p>
 
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-stone-300">
-              Em breve, este espaço destacará um filme do catálogo
-              com sua sinopse e informações.
+              Conheça filmes populares, consulte suas sinopses e
+              salve suas escolhas para assistir depois.
             </p>
           </div>
 
@@ -162,7 +163,8 @@ function HowItWorks() {
       </h2>
 
       <p className="mt-4 max-w-2xl leading-relaxed text-stone-400">
-        Conheça as funcionalidades que vão fazer parte do CineMatch.
+        Encontre uma história que combina com você e guarde sua
+        escolha para a próxima sessão.
       </p>
 
       <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -192,13 +194,45 @@ function HowItWorks() {
 function Footer() {
   return (
     <footer className="border-t border-white/10">
-      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-4 px-6 py-8 text-sm text-stone-500 sm:flex-row">
-        <p>
-          Cine<span className="text-brand">Match</span> · Projeto de
-          portfólio
-        </p>
+      <div className="mx-auto max-w-6xl px-6 py-8">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row">
+          <p className="text-sm text-stone-500">
+            Cine<span className="text-brand">Match</span>
+            {" "}· Projeto de portfólio
+          </p>
 
-        <p>Descubra o que assistir.</p>
+          <p className="text-sm text-stone-500">
+            Descubra o que assistir.
+          </p>
+        </div>
+
+        <section
+          aria-labelledby="credits-title"
+          className="mt-6"
+        >
+          <h2
+            id="credits-title"
+            className="text-sm font-bold text-stone-300"
+          >
+            Sobre e créditos
+          </h2>
+
+          <a
+            href="https://www.themoviedb.org/"
+            className="mt-4 inline-block"
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}tmdb-logo.svg`}
+              alt="The Movie Database"
+              className="h-auto w-20"
+            />
+          </a>
+
+          <p className="mt-3 text-xs leading-relaxed text-stone-400">
+            This product uses the TMDB API but is not endorsed or
+            certified by TMDB.
+          </p>
+        </section>
       </div>
     </footer>
   );

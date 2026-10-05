@@ -153,7 +153,7 @@ export default function MovieCatalog() {
       </p>
 
       <p className="mt-2 text-sm text-stone-500">
-        Catálogo de demonstração com filmes fictícios.
+        Filmes populares do TMDB. Busca e filtros aplicados aos filmes carregados.
       </p>
 
       {status === "success" && (

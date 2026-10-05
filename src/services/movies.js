@@ -1,35 +1,32 @@
 export async function fetchMovies({ signal } = {}) {
-  const url = `${import.meta.env.BASE_URL}data/movies.json`;
+  let response;
 
-  const response = await fetch(url, { signal });
+  try {
+    response = await fetch("/api/movies", { signal });
+  } catch (error) {
+    if (signal?.aborted) {
+      throw error;
+    }
 
-  if (!response.ok) {
     throw new Error(
-      `Não foi possível carregar o catálogo. Código HTTP: ${response.status}.`
+      "Não foi possível conectar. Confira se o Vite e o servidor Node estão rodando."
     );
   }
 
-  const movies = await response.json();
+  const data = await response.json().catch(() => null);
 
-  if (!Array.isArray(movies)) {
-    throw new Error("O catálogo precisa conter uma lista de filmes.");
+  if (!response.ok) {
+    throw new Error(
+      data?.error ||
+        "Não foi possível carregar os filmes. Confira o servidor Node."
+    );
   }
 
-  const validMovies = movies.every(
-    (movie) =>
-      movie &&
-      Number.isInteger(movie.id) &&
-      typeof movie.title === "string" &&
-      typeof movie.year === "number" &&
-      typeof movie.genre === "string" &&
-      typeof movie.rating === "number" &&
-      typeof movie.overview === "string" &&
-      typeof movie.posterColor === "string"
-  );
-
-  if (!validMovies) {
-    throw new Error("Existem filmes com campos inválidos no catálogo.");
+  if (!Array.isArray(data)) {
+    throw new Error(
+      "O servidor retornou um catálogo inválido."
+    );
   }
 
-  return movies;
+  return data;
 }

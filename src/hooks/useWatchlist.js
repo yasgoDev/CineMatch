@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "cinematch-watchlist-v1";
+const STORAGE_KEY = "cinematch-tmdb-watchlist-v1";
 
 function readSavedIds() {
   try {

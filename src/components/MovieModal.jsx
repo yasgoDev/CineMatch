@@ -81,7 +81,7 @@ export default function MovieModal({ movie, onClose }) {
           </div>
 
           <p className="mt-8 border-t border-white/10 pt-4 text-xs text-stone-500">
-            Filme fictício usado para demonstração do CineMatch.
+            Informações fornecidas pelo TMDB.
           </p>
         </div>
       )}

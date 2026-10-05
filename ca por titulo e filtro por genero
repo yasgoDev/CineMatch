@@ -1,0 +1,191 @@
+[1mdiff --git a/src/components/MovieCatalog.jsx b/src/components/MovieCatalog.jsx[m
+[1mindex 853a837..23ba0bf 100644[m
+[1m--- a/src/components/MovieCatalog.jsx[m
+[1m+++ b/src/components/MovieCatalog.jsx[m
+[36m@@ -3,12 +3,23 @@[m [mimport { useEffect, useState } from "react";[m
+ import { fetchMovies } from "../services/movies.js";[m
+ import MovieCard from "./MovieCard.jsx";[m
+ [m
+[32m+[m[32mfunction normalizeText(text) {[m
+[32m+[m[32m  return text[m
+[32m+[m[32m    .normalize("NFD")[m
+[32m+[m[32m    .replace(/[\u0300-\u036f]/g, "")[m
+[32m+[m[32m    .toLocaleLowerCase("pt-BR")[m
+[32m+[m[32m    .trim();[m
+[32m+[m[32m}[m
+[32m+[m
+ export default function MovieCatalog() {[m
+   const [movies, setMovies] = useState([]);[m
+   const [status, setStatus] = useState("loading");[m
+   const [error, setError] = useState("");[m
+   const [attempt, setAttempt] = useState(0);[m
+ [m
+[32m+[m[32m  const [search, setSearch] = useState("");[m
+[32m+[m[32m  const [selectedGenre, setSelectedGenre] = useState("");[m
+[32m+[m
+   useEffect(() => {[m
+     const controller = new AbortController();[m
+ [m
+[36m@@ -49,10 +60,32 @@[m [mexport default function MovieCatalog() {[m
+     };[m
+   }, [attempt]);[m
+ [m
+[32m+[m[32m  const genres = [...new Set(movies.map((movie) => movie.genre))][m
+[32m+[m[32m    .sort((first, second) => first.localeCompare(second, "pt-BR"));[m
+[32m+[m
+[32m+[m[32m  const normalizedSearch = normalizeText(search);[m
+[32m+[m
+[32m+[m[32m  const filteredMovies = movies.filter((movie) => {[m
+[32m+[m[32m    const matchesTitle = normalizeText(movie.title)[m
+[32m+[m[32m      .includes(normalizedSearch);[m
+[32m+[m
+[32m+[m[32m    const matchesGenre =[m
+[32m+[m[32m      selectedGenre === "" || movie.genre === selectedGenre;[m
+[32m+[m
+[32m+[m[32m    return matchesTitle && matchesGenre;[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  const hasFilters = normalizedSearch !== "" || selectedGenre !== "";[m
+[32m+[m
+   function handleRetry() {[m
+     setAttempt((currentAttempt) => currentAttempt + 1);[m
+   }[m
+ [m
+[32m+[m[32m  function handleClearFilters() {[m
+[32m+[m[32m    setSearch("");[m
+[32m+[m[32m    setSelectedGenre("");[m
+[32m+[m[32m  }[m
+[32m+[m
+   return ([m
+     <section[m
+       id="catalogo"[m
+[36m@@ -71,11 +104,72 @@[m [mexport default function MovieCatalog() {[m
+       </h2>[m
+ [m
+       <p className="mt-4 max-w-2xl leading-relaxed text-stone-400">[m
+[32m+[m[32m        Busque um título ou explore os filmes pelo seu gênero favorito.[m
+[32m+[m[32m      </p>[m
+[32m+[m
+[32m+[m[32m      <p className="mt-2 text-sm text-stone-500">[m
+         Catálogo de demonstração com filmes fictícios.[m
+       </p>[m
+ [m
+[32m+[m[32m      {status === "success" && movies.length > 0 && ([m
+[32m+[m[32m        <div className="mt-8 grid items-end gap-4 md:grid-cols-[1fr_220px_auto]">[m
+[32m+[m[32m          <div>[m
+[32m+[m[32m            <label[m
+[32m+[m[32m              htmlFor="movie-search"[m
+[32m+[m[32m              className="mb-2 block text-sm font-medium text-stone-300"[m
+[32m+[m[32m            >[m
+[32m+[m[32m              Buscar por título[m
+[32m+[m[32m            </label>[m
+[32m+[m
+[32m+[m[32m            <input[m
+[32m+[m[32m              id="movie-search"[m
+[32m+[m[32m              type="search"[m
+[32m+[m[32m              value={search}[m
+[32m+[m[32m              onChange={(event) => setSearch(event.target.value)}[m
+[32m+[m[32m              placeholder="Ex.: Além das Estrelas"[m
+[32m+[m[32m              className="w-full rounded-xl border border-white/20 bg-stone-900 px-4 py-3 text-white placeholder:text-stone-500"[m
+[32m+[m[32m            />[m
+[32m+[m[32m          </div>[m
+[32m+[m
+[32m+[m[32m          <div>[m
+[32m+[m[32m            <label[m
+[32m+[m[32m              htmlFor="movie-genre"[m
+[32m+[m[32m              className="mb-2 block text-sm font-medium text-stone-300"[m
+[32m+[m[32m            >[m
+[32m+[m[32m              Gênero[m
+[32m+[m[32m            </label>[m
+[32m+[m
+[32m+[m[32m            <select[m
+[32m+[m[32m              id="movie-genre"[m
+[32m+[m[32m              value={selectedGenre}[m
+[32m+[m[32m              onChange={(event) =>[m
+[32m+[m[32m                setSelectedGenre(event.target.value)[m
+[32m+[m[32m              }[m
+[32m+[m[32m              className="w-full rounded-xl border border-white/20 bg-stone-900 px-4 py-3 text-white"[m
+[32m+[m[32m            >[m
+[32m+[m[32m              <option value="">Todos os gêneros</option>[m
+[32m+[m
+[32m+[m[32m              {genres.map((genre) => ([m
+[32m+[m[32m                <option key={genre} value={genre}>[m
+[32m+[m[32m                  {genre}[m
+[32m+[m[32m                </option>[m
+[32m+[m[32m              ))}[m
+[32m+[m[32m            </select>[m
+[32m+[m[32m          </div>[m
+[32m+[m
+[32m+[m[32m          <button[m
+[32m+[m[32m            type="button"[m
+[32m+[m[32m            onClick={handleClearFilters}[m
+[32m+[m[32m            disabled={!hasFilters && search === ""}[m
+[32m+[m[32m            className="rounded-xl border border-white/20 px-5 py-3 font-medium transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40"[m
+[32m+[m[32m          >[m
+[32m+[m[32m            Limpar filtros[m
+[32m+[m[32m          </button>[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m      )}[m
+[32m+[m
+       <div[m
+[31m-        className="mt-10"[m
+[32m+[m[32m        className="mt-8"[m
+         aria-busy={status === "loading"}[m
+       >[m
+         {status === "loading" && ([m
+[36m@@ -114,18 +208,45 @@[m [mexport default function MovieCatalog() {[m
+ [m
+         {status === "success" && movies.length > 0 && ([m
+           <>[m
+[31m-            <p className="mb-5 text-sm text-stone-500">[m
+[31m-              {movies.length} filmes disponíveis[m
+[32m+[m[32m            <p[m
+[32m+[m[32m              role="status"[m
+[32m+[m[32m              className="mb-5 text-sm text-stone-400"[m
+[32m+[m[32m            >[m
+[32m+[m[32m              {filteredMovies.length === 1[m
+[32m+[m[32m                ? "1 filme encontrado"[m
+[32m+[m[32m                : `${filteredMovies.length} filmes encontrados`}[m
+             </p>[m
+ [m
+[31m-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">[m
+[31m-              {movies.map((movie) => ([m
+[31m-                <MovieCard[m
+[31m-                  key={movie.id}[m
+[31m-                  movie={movie}[m
+[31m-                />[m
+[31m-              ))}[m
+[31m-            </div>[m
+[32m+[m[32m            {filteredMovies.length > 0 ? ([m
+[32m+[m[32m              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">[m
+[32m+[m[32m                {filteredMovies.map((movie) => ([m
+[32m+[m[32m                  <MovieCard[m
+[32m+[m[32m                    key={movie.id}[m
+[32m+[m[32m                    movie={movie}[m
+[32m+[m[32m                  />[m
+[32m+[m[32m                ))}[m
+[32m+[m[32m              </div>[m
+[32m+[m[32m            ) : ([m
+[32m+[m[32m              <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center">[m
+[32m+[m[32m                <h3 className="text-xl font-bold">[m
+[32m+[m[32m                  Nenhum filme corresponde à sua busca.[m
+[32m+[m[32m                </h3>[m
+[32m+[m
+[32m+[m[32m                <p className="mt-3 text-stone-400">[m
+[32m+[m[32m                  Experimente outro título ou selecione outro gênero.[m
+[32m+[m[32m                </p>[m
+[32m+[m
+[32m+[m[32m                {hasFilters && ([m
+[32m+[m[32m                  <button[m
+[32m+[m[32m                    type="button"[m
+[32m+[m[32m                    onClick={handleClearFilters}[m
+[32m+[m[32m                    className="mt-5 rounded-full bg-brand px-5 py-3 font-bold text-stone-950 hover:bg-lime-300"[m
+[32m+[m[32m                  >[m
+[32m+[m[32m                    Mostrar todos os filmes[m
+[32m+[m[32m                  </button>[m
+[32m+[m[32m                )}[m
+[32m+[m[32m              </div>[m
+[32m+[m[32m            )}[m
+           </>[m
+         )}[m
+       </div>[m
