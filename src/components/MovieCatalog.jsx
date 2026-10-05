@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { fetchMovies } from "../services/movies.js";
+import useWatchlist from "../hooks/useWatchlist.js";
+
 import MovieCard from "./MovieCard.jsx";
 import MovieModal from "./MovieModal.jsx";
 
@@ -21,6 +23,15 @@ export default function MovieCatalog() {
   const [search, setSearch] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const [view, setView] = useState("catalog");
+
+  const {
+    savedIds,
+    isSaved,
+    toggleMovie,
+    storageError,
+  } = useWatchlist();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -65,9 +76,19 @@ export default function MovieCatalog() {
   const genres = [...new Set(movies.map((movie) => movie.genre))]
     .sort((first, second) => first.localeCompare(second, "pt-BR"));
 
+  const savedMovies = movies.filter((movie) =>
+    savedIds.includes(movie.id)
+  );
+
+  const showingWatchlist = view === "watchlist";
+
+  const currentMovies = showingWatchlist
+    ? savedMovies
+    : movies;
+
   const normalizedSearch = normalizeText(search);
 
-  const filteredMovies = movies.filter((movie) => {
+  const filteredMovies = currentMovies.filter((movie) => {
     const matchesTitle = normalizeText(movie.title)
       .includes(normalizedSearch);
 
@@ -89,9 +110,20 @@ export default function MovieCatalog() {
     setSelectedGenre("");
   }
 
+  function handleChangeView(nextView) {
+    setView(nextView);
+    handleClearFilters();
+  }
+
   function handleCloseModal() {
     setSelectedMovie(null);
   }
+
+  const activeViewClass =
+    "rounded-full bg-brand px-5 py-3 text-sm font-bold text-stone-950";
+
+  const inactiveViewClass =
+    "rounded-full border border-white/20 px-5 py-3 text-sm font-bold text-stone-300 transition-colors hover:bg-white/5";
 
   return (
     <section
@@ -100,25 +132,74 @@ export default function MovieCatalog() {
       className="pb-16"
     >
       <p className="mb-3 text-sm font-bold uppercase tracking-widest text-brand">
-        Explore novas histórias
+        {showingWatchlist
+          ? "Suas próximas histórias"
+          : "Explore novas histórias"}
       </p>
 
       <h2
         id="catalog-title"
         className="text-3xl font-bold sm:text-4xl"
       >
-        Escolha sua próxima sessão.
+        {showingWatchlist
+          ? "Sua lista: Quero assistir."
+          : "Escolha sua próxima sessão."}
       </h2>
 
       <p className="mt-4 max-w-2xl leading-relaxed text-stone-400">
-        Busque um título ou explore os filmes pelo seu gênero favorito.
+        {showingWatchlist
+          ? "Os filmes que você salvou para assistir depois."
+          : "Busque um título ou explore os filmes pelo seu gênero favorito."}
       </p>
 
       <p className="mt-2 text-sm text-stone-500">
         Catálogo de demonstração com filmes fictícios.
       </p>
 
-      {status === "success" && movies.length > 0 && (
+      {status === "success" && (
+        <div
+          role="group"
+          aria-label="Escolher visualização"
+          className="mt-8 flex flex-wrap gap-3"
+        >
+          <button
+            type="button"
+            onClick={() => handleChangeView("catalog")}
+            aria-pressed={!showingWatchlist}
+            className={
+              !showingWatchlist
+                ? activeViewClass
+                : inactiveViewClass
+            }
+          >
+            Todos os filmes
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleChangeView("watchlist")}
+            aria-pressed={showingWatchlist}
+            className={
+              showingWatchlist
+                ? activeViewClass
+                : inactiveViewClass
+            }
+          >
+            Quero assistir ({savedMovies.length})
+          </button>
+        </div>
+      )}
+
+      {storageError && (
+        <p
+          role="status"
+          className="mt-5 rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-200"
+        >
+          {storageError}
+        </p>
+      )}
+
+      {status === "success" && currentMovies.length > 0 && (
         <div className="mt-8 grid items-end gap-4 md:grid-cols-[1fr_220px_auto]">
           <div>
             <label
@@ -204,16 +285,34 @@ export default function MovieCatalog() {
           </div>
         )}
 
-        {status === "success" && movies.length === 0 && (
-          <p
-            role="status"
-            className="rounded-2xl border border-white/10 bg-white/5 p-8 text-stone-300"
-          >
-            Nenhum filme disponível no momento.
-          </p>
+        {status === "success" && currentMovies.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center">
+            <h3 className="text-xl font-bold">
+              {showingWatchlist
+                ? "Sua lista ainda está vazia."
+                : "Nenhum filme disponível no momento."}
+            </h3>
+
+            {showingWatchlist && (
+              <>
+                <p className="mt-3 text-stone-400">
+                  Explore o catálogo e adicione os filmes que deseja
+                  assistir.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => handleChangeView("catalog")}
+                  className="mt-5 rounded-full bg-brand px-5 py-3 font-bold text-stone-950 hover:bg-lime-300"
+                >
+                  Explorar filmes
+                </button>
+              </>
+            )}
+          </div>
         )}
 
-        {status === "success" && movies.length > 0 && (
+        {status === "success" && currentMovies.length > 0 && (
           <>
             <p
               role="status"
@@ -231,6 +330,8 @@ export default function MovieCatalog() {
                     key={movie.id}
                     movie={movie}
                     onDetails={setSelectedMovie}
+                    onToggleWatchlist={toggleMovie}
+                    isSaved={isSaved(movie.id)}
                   />
                 ))}
               </div>
@@ -250,7 +351,7 @@ export default function MovieCatalog() {
                     onClick={handleClearFilters}
                     className="mt-5 rounded-full bg-brand px-5 py-3 font-bold text-stone-950 hover:bg-lime-300"
                   >
-                    Mostrar todos os filmes
+                    Limpar filtros
                   </button>
                 )}
               </div>
