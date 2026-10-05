@@ -1,6 +1,6 @@
-export default function MovieCard({ movie }) {
+export default function MovieCard({ movie, onDetails }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+    <article className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5">
       <div
         className="flex aspect-[2/3] flex-col justify-between p-6"
         style={{
@@ -26,7 +26,7 @@ export default function MovieCard({ movie }) {
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center justify-between gap-3 text-sm">
           <span className="font-bold text-brand">
             <span aria-hidden="true">★ </span>
@@ -38,9 +38,20 @@ export default function MovieCard({ movie }) {
           </span>
         </div>
 
-        <p className="mt-4 leading-relaxed text-stone-400">
+        <p className="mt-4 line-clamp-3 leading-relaxed text-stone-400">
           {movie.overview}
         </p>
+
+        <div className="mt-auto pt-5">
+          <button
+            type="button"
+            onClick={() => onDetails(movie)}
+            aria-label={`Ver detalhes de ${movie.title}`}
+            className="w-full rounded-xl border border-brand/30 bg-brand/10 px-4 py-3 font-bold text-brand transition-colors hover:bg-brand/20"
+          >
+            Ver detalhes
+          </button>
+        </div>
       </div>
     </article>
   );
