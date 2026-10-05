@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "title": "Além das Estrelas",
+    "year": 2025,
+    "genre": "Ficção científica",
+    "rating": 8.4,
+    "overview": "Uma cientista recebe um sinal misterioso e parte em uma jornada que pode transformar o futuro da humanidade.",
+    "posterColor": "#233b27"
+  },
+  {
+    "id": 2,
+    "title": "Última Estação",
+    "year": 2024,
+    "genre": "Drama",
+    "rating": 7.8,
+    "overview": "Dois desconhecidos se encontram em uma estação de trem e descobrem que uma conversa pode mudar seus caminhos.",
+    "posterColor": "#453047"
+  },
+  {
+    "id": 3,
+    "title": "Horizonte Verde",
+    "year": 2025,
+    "genre": "Aventura",
+    "rating": 8.1,
+    "overview": "Uma equipe de exploradores procura um vale escondido que guarda respostas para salvar sua comunidade.",
+    "posterColor": "#285349"
+  },
+  {
+    "id": 4,
+    "title": "Plano Imperfeito",
+    "year": 2023,
+    "genre": "Comédia",
+    "rating": 7.2,
+    "overview": "Uma organizadora de eventos precisa improvisar quando todos os detalhes de uma festa começam a dar errado.",
+    "posterColor": "#735028"
+  },
+  {
+    "id": 5,
+    "title": "Depois da Meia-Noite",
+    "year": 2024,
+    "genre": "Suspense",
+    "rating": 8.0,
+    "overview": "Uma jornalista investiga mensagens anônimas que antecipam acontecimentos em uma pequena cidade.",
+    "posterColor": "#29374f"
+  },
+  {
+    "id": 6,
+    "title": "Entre Dois Mundos",
+    "year": 2025,
+    "genre": "Fantasia",
+    "rating": 8.6,
+    "overview": "Uma jovem descobre uma passagem para um mundo onde as lembranças das pessoas ganham vida.",
+    "posterColor": "#513967"
+  }
+]

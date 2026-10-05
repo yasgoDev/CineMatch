@@ -1,3 +1,5 @@
+import MovieCatalog from "./components/MovieCatalog.jsx";
+
 const features = [
   {
     number: "01",
@@ -187,34 +189,6 @@ function HowItWorks() {
   );
 }
 
-function CatalogPreview() {
-  return (
-    <section
-      id="catalogo"
-      aria-labelledby="catalog-title"
-      className="pb-16"
-    >
-      <div className="rounded-3xl border border-dashed border-white/20 bg-white/5 px-6 py-12 text-center">
-        <p className="text-sm font-bold uppercase tracking-widest text-brand">
-          Em breve
-        </p>
-
-        <h2
-          id="catalog-title"
-          className="mt-4 text-3xl font-bold"
-        >
-          Um universo de filmes para explorar.
-        </h2>
-
-        <p className="mx-auto mt-4 max-w-xl leading-relaxed text-stone-400">
-          O catálogo interativo está chegando. Aqui você poderá
-          encontrar filmes e escolher sua próxima história.
-        </p>
-      </div>
-    </section>
-  );
-}
-
 function Footer() {
   return (
     <footer className="border-t border-white/10">
@@ -238,7 +212,7 @@ export default function App() {
       <main className="mx-auto max-w-6xl px-6">
         <Hero />
         <HowItWorks />
-        <CatalogPreview />
+        <MovieCatalog />
       </main>
 
       <Footer />
