@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #b5f268;
+}
+
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #f5f5f4;
+  background-color: #101312;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid #b5f268;
+  outline-offset: 4px;
+}
+
+::selection {
+  background-color: #b5f268;
+  color: #101312;
+}
